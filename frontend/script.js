@@ -2,8 +2,8 @@ const chatWindow = document.getElementById('chat-window');
 const userInput = document.getElementById('user-input');
 const sendBtn = document.getElementById('send-btn');
 
-// URL de ton backend (à changer une fois déployé)
-const API_URL = "http://localhost:8000/query";;
+// URL de ton backend Render
+const API_URL = "https://safari-ai-agent-immobilier.onrender.com/query";
 
 function addMessage(text, side) {
     const msgDiv = document.createElement('div');
@@ -28,16 +28,24 @@ async function askAI() {
         if (data.reponse) {
             addMessage(data.reponse, 'bot');
         } else {
-            addMessage("Désolé, j'ai rencontré une erreur.", 'bot');
+            const errorMsg = data.erreur || data.erreur_interne || "Erreur inconnue";
+            addMessage(`Désolé : ${errorMsg}`, 'bot');
         }
     } catch (error) {
+        console.error("Erreur détaillée:", error);
         addMessage("Impossible de contacter le serveur.", 'bot');
     } finally {
         sendBtn.disabled = false;
     }
-}
+} // <--- C'est cette accolade qui fermait mal la fonction !
 
-sendBtn.addEventListener('click', askAI);
+// Écouteurs d'événements
+sendBtn.addEventListener('click', () => {
+    askAI();
+});
+
 userInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') askAI();
+    if (e.key === 'Enter') {
+        askAI();
+    }
 });
