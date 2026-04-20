@@ -26,7 +26,7 @@ app.add_middleware(
 )
 
 # Configuration du modèle
-llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.3)
+llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0.3)
 
 
 def charger_tous_les_documents():
