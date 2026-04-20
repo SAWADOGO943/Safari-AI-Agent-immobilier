@@ -18,12 +18,18 @@ mistral_key = os.getenv("MISTRAL_API_KEY")
 app = FastAPI()
 
 # Configuration du CORS pour autoriser Vercel
+
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Autorise toutes les origines (indispensable pour les tests)
+    # Remplace par ton URL Vercel exacte (sans le / à la fin)
+    allow_origins=[
+        "https://safari-ai-agent-immobilier-git-main-sawadogo943s-projects.vercel.app",
+        "http://localhost:5173",  # Pour tes tests locaux
+    ],
     allow_credentials=True,
-    allow_methods=["*"],  # Autorise GET, POST, etc.
-    allow_headers=["*"],  # Autorise tous les headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # 2. Initialisation des modèles (on les prépare une seule fois)
