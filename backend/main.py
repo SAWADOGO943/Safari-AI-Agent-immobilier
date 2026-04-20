@@ -17,11 +17,13 @@ mistral_key = os.getenv("MISTRAL_API_KEY")
 
 app = FastAPI()
 
+# Configuration du CORS pour autoriser Vercel
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=["*"],  # Autorise toutes les origines (indispensable pour les tests)
+    allow_credentials=True,
+    allow_methods=["*"],  # Autorise GET, POST, etc.
+    allow_headers=["*"],  # Autorise tous les headers
 )
 
 # 2. Initialisation des modèles (on les prépare une seule fois)
