@@ -1,0 +1,15 @@
+# Environnements virtuels
+.venv/
+venv/
+env/
+
+# Variables sensibles (Sécurité !)
+.env
+
+# Python
+__pycache__/
+*.pyc
+
+# OS
+.DS_Store
+Thumbs.db
