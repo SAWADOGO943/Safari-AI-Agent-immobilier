@@ -1,5 +1,6 @@
-langchain
-langchain-community
+fastapi
+uvicorn
+python-dotenv
 langchain-google-genai
-google-genai
-
+langchain-community
+pypdf
