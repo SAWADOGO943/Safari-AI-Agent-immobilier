@@ -22,12 +22,8 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    # Remplace par ton URL Vercel exacte (sans le / à la fin)
-    allow_origins=[
-        "https://safari-ai-agent-immobilier-git-main-sawadogo943s-projects.vercel.app",
-        "http://localhost:5173",  # Pour tes tests locaux
-    ],
-    allow_credentials=True,
+    allow_origins=["*"],  # Autorise toutes les sources (Vercel, Local, Mobile)
+    allow_credentials=False,  # Important : mettre à False si origins est "*"
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -107,5 +103,5 @@ async def query_agent(question: str):
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8000))
+    port = int(os.environ.get("PORT", 8000))  # Récupère le port de Render
     uvicorn.run(app, host="0.0.0.0", port=port)
