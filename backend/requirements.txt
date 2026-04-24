@@ -6,3 +6,5 @@ langchain-mistralai
 google-api-core
 langchain-community
 pypdf
+chromadb
+langchain-chroma
