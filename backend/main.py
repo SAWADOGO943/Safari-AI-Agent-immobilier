@@ -62,59 +62,64 @@ def charger_tous_les_documents():
 
 docs_globaux = charger_tous_les_documents()
 
+# 2. Initialisation des modèles
+llm_25 = ChatGoogleGenerativeAI(
+    model="gemini-2.0-flash", google_api_key=google_key
+)  # Note: Gemini 2.0 est le nom actuel
+llm_15 = ChatGoogleGenerativeAI(model="gemini-1.5-flash", google_api_key=google_key)
 
-# 1. Configuration des Embeddings
+
+# 3. Fonction unique de chargement
+def charger_tous_les_documents():
+    tous_les_docs = []
+    dossier = "DOCUMENTS"
+    if not os.path.exists(dossier):
+        print(f"❌ Dossier {dossier} absent.")
+        return []
+    for fichier in os.listdir(dossier):
+        if fichier.endswith(".pdf"):
+            try:
+                loader = PyPDFLoader(os.path.join(dossier, fichier))
+                tous_les_docs.extend(loader.load())
+                print(f"✅ Document chargé : {fichier}")
+            except Exception as e:
+                print(f"⚠️ Erreur chargement {fichier} : {e}")
+    return tous_les_docs
+
+
+# 4. Configuration ChromaDB
 embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
 persist_directory = "./db_safari"
 
-
-# 2. Ta fonction actuelle (légèrement modifiée pour retourner les pages)
-def extraire_donnees_pdf():
-    docs = []  # <--- IL MANQUE CETTE LIGNE !
-    # ... (ton code actuel qui utilise PyPDFLoader)
-    return docs  # Retourne la liste des documents chargés
-
-
-# 3. Initialisation de la base de données
+# INITIALISATION DE LA BASE (Le coeur du système)
 if not os.path.exists(persist_directory):
     print("📦 Première utilisation : Indexation des documents dans ChromaDB...")
-    docs = extraire_donnees_pdf()
+    docs = charger_tous_les_documents()  # On utilise la fonction qui marche !
 
     if not docs:
-        print(
-            "❌ Erreur : Aucun document PDF n'a été chargé. Vérifie le dossier DOCUMENTS."
+        print("❌ Erreur : Aucun document PDF trouvé.")
+        # On crée une base vide pour éviter les erreurs au lancement
+        vector_db = Chroma(
+            persist_directory=persist_directory, embedding_function=embeddings
         )
     else:
-        # On découpe le texte
         text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=1000, chunk_overlap=100
         )
         splits = text_splitter.split_documents(docs)
-
-        if not splits:
-            print("❌ Erreur : Le découpage (splitting) n'a produit aucun texte.")
-        else:
-            print(f"✅ {len(splits)} morceaux de texte prêts à être indexés.")
-            # On crée la base
-            vector_db = Chroma.from_documents(
-                documents=splits,
-                embedding=embeddings,
-                persist_directory=persist_directory,
-            )
-            print("✅ Indexation terminée !")
-
-
+        vector_db = Chroma.from_documents(
+            documents=splits,
+            embedding=embeddings,
+            persist_directory=persist_directory,
+        )
+        print("✅ Indexation terminée !")
 else:
-    # On charge simplement la base existante sans relire les PDF
     print("   Base de données détectée, chargement en cours...")
     vector_db = Chroma(
         persist_directory=persist_directory, embedding_function=embeddings
     )
 
-    # Collection pour les documents (déjà créée)
-# vector_db = Chroma(...)
-
-# Nouvelle collection pour l'historique des conversations
+# Initialisation de la collection historique
 history_db = Chroma(
     persist_directory=persist_directory,
     embedding_function=embeddings,
