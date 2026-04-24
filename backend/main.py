@@ -88,7 +88,7 @@ def charger_tous_les_documents():
 
 
 # 4. Configuration ChromaDB
-embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
+embeddings = GoogleGenerativeAIEmbeddings(model="text-embedding-001")
 persist_directory = "./db_safari"
 
 # INITIALISATION DE LA BASE (Le coeur du système)
