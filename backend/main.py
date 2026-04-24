@@ -64,7 +64,7 @@ docs_globaux = charger_tous_les_documents()
 
 
 # 1. Configuration des Embeddings
-embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
 persist_directory = "./db_safari"
 
 
